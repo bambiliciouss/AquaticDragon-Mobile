@@ -1,51 +1,74 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
-
-const GallonList = () => {
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import React, { useEffect } from "react";
+var { width } = Dimensions.get("window");
+const GallonList = (item, index) => {
+//   useEffect(() => {
+//     console.log("Item:", item);
+//   }, [item]);
   return (
     <View>
-      <FlatList
-        data={productFilter}
-        ListHeaderComponent={ListHeader}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        renderItem={({ item, index }) => (
-          <ListItem item={item} index={index} deleteProduct={deleteProduct} />
-        )}
-        keyExtractor={(item) => item.id}
-      />
+      <TouchableOpacity
+        style={[
+          styles.container,
+          {
+            backgroundColor: index % 2 == 0 ? "white" : "gainsboro",
+          },
+        ]}>
+        <Image
+          source={{
+            uri: item.item.image ? item.item.image : null,
+          }}
+          resizeMode="contain"
+          style={styles.image}
+        />
+        <Text style={styles.item}>{item.item.type || "N/A"}</Text>
+
+        <Text style={styles.item}>{item.item.gallonAge || "N/A"}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  listHeader: {
+  container: {
     flexDirection: "row",
     padding: 5,
-    backgroundColor: "gainsboro",
+    width: width,
+   marginBottom:5
   },
-  headerItem: {
-    margin: 3,
-    width: width / 6,
+  image: {
+    borderRadius: 10,
+    width: width / 3,
+    aspectRatio: 1,
+    margin: 7,
   },
-  spinner: {
-    height: height / 2,
-    alignItems: "center",
+  item: {
+    flexWrap: "wrap",
+    marginVertical: 3,
+    width: width / 3,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign:"center"
+
+  },
+  centeredView: {
+    flex: 1,
     justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
   },
-  container: {
-    marginBottom: 160,
-    backgroundColor: "white",
-  },
-  buttonContainer: {
-    margin: 20,
-    alignSelf: "center",
-    flexDirection: "row",
-  },
-  buttonText: {
-    marginLeft: 4,
+
+  textStyle: {
     color: "white",
+    fontWeight: "bold",
   },
 });
 

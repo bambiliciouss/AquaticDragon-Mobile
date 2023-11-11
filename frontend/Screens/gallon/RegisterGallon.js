@@ -38,8 +38,8 @@ const RegisterGallon = () => {
   const typeInputRef = useRef(null);
   const gallonAgeInputRef = useRef(null);
 
-  const navigateToHome = () => {
-    navigation.navigate("Home");
+  const navigateToGallonList = () => {
+    navigation.navigate("Gallons");
   };
 
   const dropdownItems = [
@@ -114,7 +114,7 @@ const RegisterGallon = () => {
           gallonAgeInputRef.current.clear();
 
           setTimeout(() => {
-            navigateToHome();
+            navigateToGallonList();
           }, 500);
         }
       })

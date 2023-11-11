@@ -47,12 +47,21 @@ router.post(
     gallon = await gallon.save();
 
     if (!gallon) {
-      console.log("error")
+      console.log("error");
       return res.status(400).send("the user cannot be created!");
     }
 
     res.send(gallon);
   }
 );
+
+router.get(`/`, async (req, res) => {
+  const productList = await Gallon.find();
+
+  if (!productList) {
+    res.status(500).json({ success: false });
+  }
+  res.send(productList);
+});
 
 module.exports = router;
