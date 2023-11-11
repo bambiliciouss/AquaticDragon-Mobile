@@ -2,12 +2,12 @@ import {
   View,
   Text,
   Image,
-  Pressable,
   TextInput,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import COLORS from "../../Constants/colors";
 import Button from "../../Components/Button";
@@ -19,86 +19,102 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AuthGlobal from "../../Context/store/AuthGlobal";
 
+import mime from "mime";
+import * as ImagePicker from "expo-image-picker";
+import { Ionicons } from "@expo/vector-icons";
+
+import { Picker } from "@react-native-picker/picker";
+
 const RegisterGallon = () => {
   const [user, setUser] = useState("");
   const [type, setType] = useState("");
   const [gallonAge, setGallonAge] = useState("");
+  const [image, setImage] = useState("");
+  const [mainImage, setMainImage] = useState();
 
   const navigation = useNavigation();
   const context = useContext(AuthGlobal);
 
-  const navigateToLogin = () => {
-    navigation.navigate("Login");
+  const typeInputRef = useRef(null);
+  const gallonAgeInputRef = useRef(null);
+
+  const navigateToHome = () => {
+    navigation.navigate("Home");
   };
 
-  // const registerGallon = (props) => {
-  //   let gallon = {
-  //     type: type,
-  //     gallonAge: gallonAge,
-  //   };
-  //   AsyncStorage.getItem("jwt")
-  //     .then((res) => {
-  //       setToken(res);
-  //     })
-  //     .catch((error) => console.log(error));
-  //   const config = {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   };
-  //   axios
-  //     .post(`${baseURL}gallon/registergallons`, gallon, config)
-  //     .then((res) => {
-  //       if (res.status == 200 || res.status == 201) {
-  //         Toast.show({
-  //           topOffset: 60,
-  //           type: "success",
-  //           text1: "Registration Succeeded",
-  //         });
-  //         setTimeout(() => {
-  //           navigateToLogin();
-  //         }, 500);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       Toast.show({
-  //         position: "bottom",
-  //         bottomOffset: 20,
-  //         type: "error",
-  //         text1: "Something went wrong",
-  //         text2: "Please try again",
-  //       });
-  //     });
-  // };
+  const dropdownItems = [
+    { label: "Slim 5 Gallon", value: "Slim 5 Gallon" },
+    { label: "Round 5 Gallon", value: "Round 5 Gallon" },
+
+    // Add more options as needed
+  ];
 
   useEffect(() => {
     if (context.stateUser.isAuthenticated) {
       setUser(context.stateUser.user.userId);
     }
+
+    (async () => {
+      if (Platform.OS !== "web") {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
+    })();
   });
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log(result.assets);
+      setMainImage(result.assets[0].uri);
+      setImage(result.assets[0].uri);
+    }
+  };
+
   const registerGallon = () => {
-    let gallon = {
-      type: type,
-      gallonAge: gallonAge,
-      user: user,
+    let formData = new FormData();
+    const newImageUri = "file:///" + image.split("file:/").join("");
+
+    formData.append("type", type);
+    formData.append("gallonAge", gallonAge);
+    formData.append("user", user);
+    formData.append("image", {
+      uri: newImageUri,
+      type: mime.getType(newImageUri),
+      name: newImageUri.split("/").pop(),
+    });
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     };
-    console.log(gallon);
+
+    console.log(formData);
     axios
-      .post(`${baseURL}gallon/registergallons`, gallon)
+      .post(`${baseURL}gallon/registergallons`, formData, config)
       .then((res) => {
         if (res.status == 200 || res.status == 201) {
           Toast.show({
             topOffset: 60,
             type: "success",
-            text1: "Order Completed",
+            text1: "Gallon Registered",
             text2: "",
           });
-          // dispatch(actions.clearCart())
-          // props.navigation.navigate("Cart")
+
+          typeInputRef.current.clear();
+          gallonAgeInputRef.current.clear();
 
           setTimeout(() => {
-            navigateToLogin();
+            navigateToHome();
           }, 500);
         }
       })
@@ -128,6 +144,15 @@ const RegisterGallon = () => {
             </Text>
           </View>
 
+          <View style={styles.container}>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: mainImage }} />
+              <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+                <Ionicons style={{ color: "white" }} name="camera" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
           {/* TYPE */}
           <View style={{ marginBottom: 12 }}>
             <Text
@@ -136,7 +161,7 @@ const RegisterGallon = () => {
                 fontWeight: 400,
                 marginVertical: 8,
               }}>
-              Type of Gallon
+              Type of Gallon Container
             </Text>
 
             <View
@@ -150,7 +175,8 @@ const RegisterGallon = () => {
                 justifyContent: "center",
                 paddingLeft: 10,
               }}>
-              <TextInput
+              {/* <TextInput
+                ref={typeInputRef}
                 placeholder="Enter your type of gallon"
                 placeholderTextColor={COLORS.black}
                 keyboardType="default"
@@ -158,7 +184,20 @@ const RegisterGallon = () => {
                   width: "100%",
                 }}
                 onChangeText={(text) => setType(text)}
-              />
+              /> */}
+              <Picker
+                selectedValue={type}
+                onValueChange={(itemValue) => setType(itemValue)}
+                style={{ height: 40, width: "100%" }}>
+                <Picker.Item label="Choose here..." value={null} />
+                {dropdownItems.map((item) => (
+                  <Picker.Item
+                    key={item.value}
+                    label={item.label}
+                    value={item.value}
+                  />
+                ))}
+              </Picker>
             </View>
           </View>
 
@@ -185,6 +224,7 @@ const RegisterGallon = () => {
                 paddingLeft: 10,
               }}>
               <TextInput
+                ref={gallonAgeInputRef}
                 placeholder="Enter your age"
                 placeholderTextColor={COLORS.black}
                 keyboardType="numeric"
@@ -210,5 +250,39 @@ const RegisterGallon = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageContainer: {
+    width: 200,
+    height: 200,
+    borderStyle: "solid",
+    borderWidth: 8,
+    padding: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 100,
+    borderColor: "#E0E0E0",
+    elevation: 10,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 100,
+  },
+  imagePicker: {
+    position: "absolute",
+    right: 5,
+    bottom: 5,
+    backgroundColor: "grey",
+    padding: 8,
+    borderRadius: 100,
+    elevation: 20,
+  },
+});
 
 export default RegisterGallon;

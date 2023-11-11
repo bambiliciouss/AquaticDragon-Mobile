@@ -32,6 +32,8 @@ const Login = (props) => {
   };
 
   useEffect(() => {
+    AsyncStorage.getItem("email").then((value) => setEmail(value || ""));
+    AsyncStorage.getItem("password").then((value) => setPassword(value || ""));
     console.log(context);
     if (context.stateUser.isAuthenticated === true) {
       navigation.navigate("Profile");
@@ -49,7 +51,7 @@ const Login = (props) => {
       console.log("Please fill in your credentials");
     } else {
       loginUser(user, context.dispatch);
-      console.log(context)
+      console.log(context);
     }
   };
 

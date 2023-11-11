@@ -11,19 +11,11 @@ const gallonSchema = new mongoose.Schema({
     required: true,
   },
 
-  // gallonImage: {
-  //   public_id: {
-  //     type: String,
-
-  //     required: true,
-  //   },
-
-  //   url: {
-  //     type: String,
-
-  //     required: true,
-  //   },
-  // },
+  image: {
+    type: String,
+    default: "",
+    required: true,
+  },
 
   gallonAge: {
     type: String,
@@ -36,4 +28,4 @@ const gallonSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-exports.Gallon = mongoose.model('Gallon', gallonSchema);
+exports.Gallon = mongoose.model("Gallon", gallonSchema);
