@@ -51,15 +51,15 @@ const Gallons = () => {
         .catch((error) => console.log(error));
 
       axios.get(`${baseURL}gallon`).then((res) => {
-        //console.log(res.data);
+      //console.log(res.data);
         setGallonList(res.data);
-        setLoading(false);
+        setLoading(false);console.log("Gallon List:", gallonList);
       });
 
       return () => {
         setGallonList();
         setLoading(true);
-        console.log("Gallon List:", gallonList);
+        
       };
     }, [])
   );
@@ -74,7 +74,7 @@ const Gallons = () => {
         <View style={styles.headerItem}>
           <Text style={styles.headerItem}>Gallon Age</Text>
         </View> */}
-        <Text style={styles.headerItem}></Text>
+        <Text style={styles.headerItem}>Image</Text>
 
         <Text style={styles.headerItem}>Container Type</Text>
 

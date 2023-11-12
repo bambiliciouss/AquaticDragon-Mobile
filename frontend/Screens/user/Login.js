@@ -76,7 +76,7 @@ const Login = (props) => {
                 marginTop: 30,
               }}>
               <Image
-                source={require("../../assets/onboarding_1.png")}
+                source={require("../../assets/logo2.0.png")}
                 style={{ width: 200, height: 200 }}
               />
             </View>
