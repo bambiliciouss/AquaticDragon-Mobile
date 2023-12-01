@@ -9,6 +9,7 @@ import Register from "../Screens/user/Register";
 import Login from "../Screens/user/Login";
 import Profile from "../Screens/user/Profile";
 import AuthGlobal from "../Context/store/AuthGlobal";
+import SupplierRegister from "../Screens/supplier/SupplierRegister";
 const UserNavigator = () => {
   return (
     <Stack.Navigator
@@ -35,6 +36,7 @@ const UserNavigator = () => {
         name="Register"
         component={Register}
         option={{
+        
           headerTransparent: true,
         }}
       />
@@ -45,6 +47,14 @@ const UserNavigator = () => {
           headerTransparent: true,
         }}
       />
+
+      {/* <Stack.Screen
+        name="Supplier"
+        component={SupplierRegister}
+        option={{
+          headerTransparent: true,
+        }}
+      /> */}
     </Stack.Navigator>
   );
 };

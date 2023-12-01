@@ -17,6 +17,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import AuthGlobal from "../../Context/store/AuthGlobal";
 import { loginUser } from "../../Context/Actions/Auth.actions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Error from "../../Constants/Error";
+import SupplierRegister from "../supplier/SupplierRegister";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
@@ -27,8 +29,16 @@ const Login = (props) => {
   const context = useContext(AuthGlobal);
   const navigation = useNavigation();
 
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
   const navigateToRegister = () => {
     navigation.navigate("Register");
+  };
+
+  const navigateToSupplierRegister = () => {
+    navigation.navigate("Supplier");
   };
 
   useEffect(() => {
@@ -47,11 +57,19 @@ const Login = (props) => {
       password,
     };
 
-    if (email === "" || password === "") {
-      console.log("Please fill in your credentials");
+    setError("");
+    setEmailError(false);
+    setPasswordError(false);
+
+    if (email === "") {
+      setError("Please fill in your email address");
+      setEmailError(true);
+    } else if (password === "") {
+      setError("Please fill in your password");
+      setPasswordError(true);
     } else {
       loginUser(user, context.dispatch);
-      console.log(context);
+      console.log("User Profile", context);
     }
   };
 
@@ -73,7 +91,7 @@ const Login = (props) => {
               style={{
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 30,
+                marginTop: 10,
               }}>
               <Image
                 source={require("../../assets/logo2.0.png")}
@@ -115,7 +133,7 @@ const Login = (props) => {
               style={{
                 width: "100%",
                 height: 48,
-                borderColor: COLORS.black,
+                borderColor: emailError ? "red" : COLORS.black,
                 borderWidth: 1,
                 borderRadius: 8,
                 alignItems: "center",
@@ -124,7 +142,7 @@ const Login = (props) => {
               }}>
               <TextInput
                 placeholder="Enter your email address"
-                placeholderTextColor={COLORS.black}
+                placeholderTextColor={emailError ? "red" : COLORS.black}
                 keyboardType="email-address"
                 style={{
                   width: "100%",
@@ -132,9 +150,13 @@ const Login = (props) => {
                 name={"email"}
                 id={"email"}
                 value={email}
-                onChangeText={(text) => setEmail(text.toLowerCase())}
+                onChangeText={(text) => {
+                  setEmail(text.toLowerCase());
+                  setEmailError(false);
+                }}
               />
             </View>
+            {emailError ? <Error message={error} /> : null}
           </View>
 
           <View style={{ marginBottom: 12 }}>
@@ -151,7 +173,7 @@ const Login = (props) => {
               style={{
                 width: "100%",
                 height: 48,
-                borderColor: COLORS.black,
+                borderColor: passwordError ? "red" : COLORS.black,
                 borderWidth: 1,
                 borderRadius: 8,
                 alignItems: "center",
@@ -160,7 +182,7 @@ const Login = (props) => {
               }}>
               <TextInput
                 placeholder="Enter your password"
-                placeholderTextColor={COLORS.black}
+                placeholderTextColor={passwordError ? "red" : COLORS.black}
                 secureTextEntry={isPasswordShown}
                 style={{
                   width: "100%",
@@ -168,7 +190,10 @@ const Login = (props) => {
                 name={"password"}
                 id={"password"}
                 value={password}
-                onChangeText={(text) => setPassword(text)}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setPasswordError(false);
+                }}
               />
 
               <TouchableOpacity
@@ -184,17 +209,20 @@ const Login = (props) => {
                 )}
               </TouchableOpacity>
             </View>
+            {passwordError ? <Error message={error} /> : null}
           </View>
-
-          <Button
-            title="Login"
-            filled
-            style={{
-              marginTop: 18,
-              marginBottom: 4,
-            }}
-            onPress={() => handleSubmit()}
-          />
+          <View>
+            {/* {error ? <Error message={error} /> : null} */}
+            <Button
+              title="Login"
+              filled
+              style={{
+                marginTop: 18,
+                marginBottom: 4,
+              }}
+              onPress={() => handleSubmit()}
+            />
+          </View>
 
           <View
             style={{

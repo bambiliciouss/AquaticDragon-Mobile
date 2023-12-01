@@ -33,6 +33,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  image: {
+    type: String,
+    default: "",
+    required: true,
+  },
+
   email: {
     type: String,
     required: true,

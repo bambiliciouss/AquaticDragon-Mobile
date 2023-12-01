@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
     if (isValid) {
       uploadError = null;
     }
-    cb(uploadError, "public/uploads");
+    cb(uploadError, "public/uploads/gallons");
   },
   filename: function (req, file, cb) {
     const fileName = file.originalname.split(" ").join("-");
@@ -36,7 +36,9 @@ router.post(
     if (!file) return res.status(400).send("No image in the request");
 
     const fileName = file.filename;
-    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+    const basePath = `${req.protocol}://${req.get(
+      "host"
+    )}/public/uploads/gallons/`;
 
     let gallon = new Gallon({
       type: req.body.type,
@@ -55,12 +57,15 @@ router.post(
   }
 );
 
-router.get(`/`, async (req, res) => {
-  const productList = await Gallon.find();
+router.get(`/:id`, async (req, res) => {
+  console.log(req.params.id);
+  const productList = await Gallon.find({ user: req.params.id });
 
-  if (!productList) {
-    res.status(500).json({ success: false });
-  }
+  console.log(productList);
+
+  // if (!productList) {
+  //   return res.status(500).send("login first");
+  // }
   res.send(productList);
 });
 

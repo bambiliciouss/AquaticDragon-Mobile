@@ -5,9 +5,10 @@ import {
   Pressable,
   TextInput,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import COLORS from "../../Constants/colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,6 +19,9 @@ import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import baseURL from "../../assets/common/baseurl";
 import axios from "axios";
+
+import mime from "mime";
+import * as ImagePicker from "expo-image-picker";
 
 const Register = () => {
   const [fname, setFname] = useState("");
@@ -32,6 +36,9 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const [image, setImage] = useState("");
+  const [mainImage, setMainImage] = useState();
+
   const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
 
@@ -39,6 +46,32 @@ const Register = () => {
 
   const navigateToLogin = () => {
     navigation.navigate("Login");
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
+    })();
+  });
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log(result.assets);
+      setMainImage(result.assets[0].uri);
+      setImage(result.assets[0].uri);
+    }
   };
 
   const register = (props) => {
@@ -56,21 +89,34 @@ const Register = () => {
     // ) {
     //   setError("Please fill in the form correctly");
     // }
-    let user = {
-      fname: fname,
-      lname: lname,
-      phone: phone,
-      houseNo: houseNo,
-      streetName: streetName,
-      purokNum: purokNum,
-      barangay: barangay,
-      city: city,
-      email: email,
-      password: password,
-      isAdmin: false,
+
+    let formData = new FormData();
+    const newImageUri = "file:///" + image.split("file:/").join("");
+    formData.append("fname", fname);
+    formData.append("lname", lname);
+    formData.append("phone", phone);
+    formData.append("houseNo", houseNo);
+    formData.append("streetName", streetName);
+    formData.append("purokNum", purokNum);
+    formData.append("barangay", barangay);
+    formData.append("city", city);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("isAdmin", false);
+    formData.append("image", {
+      uri: newImageUri,
+      type: mime.getType(newImageUri),
+      name: newImageUri.split("/").pop(),
+    });
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     };
+
     axios
-      .post(`${baseURL}users/register`, user)
+      .post(`${baseURL}users/register`, formData, config)
       .then((res) => {
         if (res.status == 200) {
           Toast.show({
@@ -99,24 +145,18 @@ const Register = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <KeyboardAwareScrollView>
         <View style={{ flex: 1, marginHorizontal: 22 }}>
-          <View style={{ marginVertical: 22 }}>
+          <View style={{ marginVertical: 2 }}>
             <Text
               style={{
                 fontSize: 22,
                 fontWeight: "bold",
-                marginVertical: 12,
+                marginVertical: 5,
                 color: COLORS.black,
               }}>
               Create Account
             </Text>
 
-            <Text
-              style={{
-                fontSize: 16,
-                color: COLORS.black,
-              }}>
-              Connect with your friend today!
-            </Text>
+  
           </View>
 
           {/* FIRST AND LAST NAME */}
@@ -482,6 +522,15 @@ const Register = () => {
             </View>
           </View>
 
+          <View style={styles.container}>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: mainImage }} />
+              <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+                <Ionicons style={{ color: "white" }} name="camera" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
           <View
             style={{
               flexDirection: "row",
@@ -533,5 +582,39 @@ const Register = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageContainer: {
+    width: 200,
+    height: 200,
+    borderStyle: "solid",
+    borderWidth: 8,
+    padding: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 100,
+    borderColor: "#E0E0E0",
+    elevation: 10,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 100,
+  },
+  imagePicker: {
+    position: "absolute",
+    right: 5,
+    bottom: 5,
+    backgroundColor: "grey",
+    padding: 8,
+    borderRadius: 100,
+    elevation: 20,
+  },
+});
 
 export default Register;

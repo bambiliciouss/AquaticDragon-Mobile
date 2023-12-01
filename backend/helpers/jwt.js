@@ -13,6 +13,11 @@ function authJwt() {
         url: /\/api\/v1\/gallon(.*)/,
         methods: ["GET", "POST", "PUT", "OPTIONS"],
       },
+      {
+        url: /\/api\/v1\/supplier(.*)/,
+        methods: ["GET", "POST", "PUT", "OPTIONS"],
+      },
+
       { url: /\/api\/v1\/categories(.*)/, methods: ["GET", "OPTIONS"] },
       {
         url: /\/api\/v1\/orders(.*)/,
@@ -23,6 +28,9 @@ function authJwt() {
       `${api}/users/login`,
       `${api}/users/register`,
       `${api}/gallon/registergallons`,
+      `${api}/supplier/registersupplierbranch`,
+      
+
     ],
   });
 }

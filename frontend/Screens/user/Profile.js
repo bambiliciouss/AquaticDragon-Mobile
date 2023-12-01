@@ -9,7 +9,7 @@ import AuthGlobal from "../../Context/store/AuthGlobal";
 import { logoutUser } from "../../Context/Actions/Auth.actions";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Button from "../../Components/Button";
-
+import Toast from "react-native-toast-message";
 
 const Profile = () => {
   const context = useContext(AuthGlobal);
@@ -45,12 +45,11 @@ const Profile = () => {
       <View style={styles.avatarContainer}>
         <Image
           source={{
-            uri: "https://www.bootdey.com/img/Content/avatar/avatar6.png",
+            uri: userProfile ? userProfile.image : null,
           }}
           style={styles.avatar}
         />
         <Text style={styles.name}>
-          {" "}
           {userProfile ? userProfile.fname : ""}{" "}
           {userProfile ? userProfile.lname : ""}
         </Text>
@@ -70,10 +69,10 @@ const Profile = () => {
       <View style={styles.infoContainer}>
         <Text style={styles.infoLabel}>Location:</Text>
         <Text style={styles.infoValue}>
-          {userProfile ? userProfile.houseNo : ""},{" "}
-          {userProfile ? userProfile.purokNum : ""}{" "}
-          {userProfile ? userProfile.streetName : ""},{" "}
-          {userProfile ? userProfile.barangay : ""},{" "}
+          {userProfile ? userProfile.houseNo : ""},
+          {userProfile ? userProfile.purokNum : ""}
+          {userProfile ? userProfile.streetName : ""},
+          {userProfile ? userProfile.barangay : ""},
           {userProfile ? userProfile.city : ""}
         </Text>
       </View>
@@ -88,8 +87,29 @@ const Profile = () => {
         onPress={() => [
           AsyncStorage.removeItem("jwt"),
           logoutUser(context.dispatch),
+          Toast.show({
+            topOffset: 60,
+            type: "success",
+            text1: `Logout Successfully`,
+            text2: "Please Comeback Again",
+          }),
         ]}
       />
+      {context && context.stateUser.user.role === "admin" && (
+        <Button
+          title="View Branch Store"
+          filled
+          style={{
+            marginTop: 18,
+            marginBottom: 4,
+          }}
+          onPress={() =>
+            navigation.navigate("Register as Distributor", {
+              screen: "Branch",
+            })
+          }
+        />
+      )}
     </View>
   );
 };

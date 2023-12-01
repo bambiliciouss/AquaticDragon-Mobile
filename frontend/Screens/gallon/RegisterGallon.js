@@ -25,22 +25,14 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { Picker } from "@react-native-picker/picker";
 
-const RegisterGallon = () => {
+const RegisterGallon = ({ navigation }) => {
   const [user, setUser] = useState("");
   const [type, setType] = useState("");
   const [gallonAge, setGallonAge] = useState("");
   const [image, setImage] = useState("");
   const [mainImage, setMainImage] = useState();
 
-  const navigation = useNavigation();
   const context = useContext(AuthGlobal);
-
-  const typeInputRef = useRef(null);
-  const gallonAgeInputRef = useRef(null);
-
-  const navigateToGallonList = () => {
-    navigation.navigate("Gallons");
-  };
 
   const dropdownItems = [
     { label: "Slim 5 Gallon", value: "Slim 5 Gallon" },
@@ -110,11 +102,8 @@ const RegisterGallon = () => {
             text2: "",
           });
 
-          typeInputRef.current.clear();
-          gallonAgeInputRef.current.clear();
-
           setTimeout(() => {
-            navigateToGallonList();
+            navigation.navigate("Gallons");
           }, 500);
         }
       })
@@ -224,7 +213,6 @@ const RegisterGallon = () => {
                 paddingLeft: 10,
               }}>
               <TextInput
-                ref={gallonAgeInputRef}
                 placeholder="Enter your age"
                 placeholderTextColor={COLORS.black}
                 keyboardType="numeric"

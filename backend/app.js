@@ -21,11 +21,14 @@ app.use("/public/uploads", express.static(__dirname + "/public/uploads"));
 
 const usersRoutes = require("./routes/users");
 const gallonRoutes = require("./routes/gallon");
+const supplierRoutes = require("./routes/supplier");
 
 const api = process.env.API_URL;
 
 app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/gallon`, gallonRoutes);
+app.use(`${api}/supplier`, supplierRoutes);
+
 
 //Database
 mongoose

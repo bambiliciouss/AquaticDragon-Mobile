@@ -5,6 +5,8 @@ import {
   StyleSheet,
   RefreshControl,
   Dimensions,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useCallback, useContext } from "react";
 
@@ -17,7 +19,7 @@ var { height, width } = Dimensions.get("window");
 
 import AuthGlobal from "../../Context/store/AuthGlobal";
 import Button from "../../Components/Button";
-
+import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 
 const Gallons = () => {
@@ -43,25 +45,30 @@ const Gallons = () => {
 
   useFocusEffect(
     useCallback(() => {
-      // Get Token
-      AsyncStorage.getItem("jwt")
-        .then((res) => {
-          setToken(res);
-        })
-        .catch((error) => console.log(error));
-
-      axios.get(`${baseURL}gallon`).then((res) => {
-      //console.log(res.data);
-        setGallonList(res.data);
-        setLoading(false);console.log("Gallon List:", gallonList);
-      });
-
-      return () => {
-        setGallonList();
-        setLoading(true);
-        
-      };
-    }, [])
+      if (!context.stateUser.isAuthenticated) {
+        navigation.navigate("User", { screen: "Login" });
+      } else {
+        console.log(context.stateUser.user);
+        AsyncStorage.getItem("jwt")
+          .then((res) => {
+            axios
+              .get(`${baseURL}gallon/${context.stateUser.user.userId}`, {
+                headers: { Authorization: `Bearer ${res}` },
+              })
+              .then((res) => {
+                //console.log(res.data);
+                setGallonList(res.data);
+                setLoading(false);
+                console.log("Gallon List:", gallonList);
+              });
+          })
+          .catch((error) => console.log(error));
+        return () => {
+          setGallonList();
+          setLoading(true);
+        };
+      }
+    }, [context.stateUser.isAuthenticated])
   );
 
   const ListHeader = () => {
@@ -84,30 +91,33 @@ const Gallons = () => {
   };
 
   return (
-    <View>
-      <View>
-        <Button
-          title="Register New Gallon"
-          filled
-          style={{
-            marginTop: 18,
-            marginBottom: 4,
-          }}
-          onPress={() => navigation.navigate("Register Gallon")}
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <View>
+          <Button
+            title="Register New Gallon"
+            filled
+            style={{
+              marginTop: 4,
+              marginBottom: 10,
+            }}
+            onPress={() => navigation.navigate("Register Gallon")}
+          />
+        </View>
+
+        <FlatList
+          data={gallonList}
+          ListHeaderComponent={ListHeader}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          renderItem={({ item, index }) => (
+            <GallonList item={item} index={index} />
+          )}
+          keyExtractor={(item) => item._id}
         />
       </View>
-      <FlatList
-        data={gallonList}
-        ListHeaderComponent={ListHeader}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        renderItem={({ item, index }) => (
-          <GallonList item={item} index={index} />
-        )}
-        keyExtractor={(item) => item._id}
-      />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -145,6 +155,9 @@ const styles = StyleSheet.create({
   buttonText: {
     marginLeft: 4,
     color: "white",
+  },
+  container1: {
+    flex: 1,
   },
 });
 

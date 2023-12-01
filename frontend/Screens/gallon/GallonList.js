@@ -7,31 +7,32 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect } from "react";
+import Button
+ from "../../Components/Button";
 var { width } = Dimensions.get("window");
 const GallonList = (item, index) => {
-//   useEffect(() => {
-//     console.log("Item:", item);
-//   }, [item]);
+  //   useEffect(() => {
+  //     console.log("Item:", item);
+  //   }, [item]);
   return (
-    <View>
-      <TouchableOpacity
-        style={[
-          styles.container,
-          {
-            backgroundColor: index % 2 == 0 ? "white" : "gainsboro",
-          },
-        ]}>
-        <Image
-          source={{
-            uri: item.item.image ? item.item.image : null,
-          }}
-          resizeMode="contain"
-          style={styles.image}
-        />
-        <Text style={styles.item}>{item.item.type || "N/A"}</Text>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: index % 2 == 0 ? "white" : "gainsboro",
+        },
+      ]}>
+      <Image
+        source={{
+          uri: item.item.image ? item.item.image : null,
+        }}
+        resizeMode="contain"
+        style={styles.image}
+      />
+      <Text style={styles.item}>{item.item.type || "N/A"}</Text>
 
-        <Text style={styles.item}>{item.item.gallonAge || "N/A"}</Text>
-      </TouchableOpacity>
+      <Text style={styles.item}>{item.item.gallonAge || "N/A"}</Text>
+
     </View>
   );
 };
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 5,
     width: width,
-   marginBottom:5
+    marginBottom: 5,
   },
   image: {
     borderRadius: 10,
@@ -56,8 +57,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
-    textAlign:"center"
-
+    textAlign: "center",
   },
   centeredView: {
     flex: 1,
