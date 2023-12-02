@@ -105,9 +105,21 @@ const Gallons = () => {
           />
         </View>
 
-        <FlatList
+        {/* <FlatList
           data={gallonList}
           ListHeaderComponent={ListHeader}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          renderItem={({ item, index }) => (
+            <GallonList item={item} index={index} />
+          )}
+          keyExtractor={(item) => item._id}
+        /> */}
+
+        <FlatList
+          contentContainerStyle={styles.propertyListContainer}
+          data={gallonList}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -122,6 +134,9 @@ const Gallons = () => {
 };
 
 const styles = StyleSheet.create({
+  propertyListContainer: {
+    paddingHorizontal: 20,
+  },
   listHeader: {
     flexDirection: "row",
     padding: 5,

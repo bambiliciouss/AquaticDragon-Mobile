@@ -7,37 +7,80 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect } from "react";
-import Button
- from "../../Components/Button";
+import Button from "../../Components/Button";
+import { useSelector, useDispatch } from "react-redux";
 var { width } = Dimensions.get("window");
+
+import * as actions from "../../Redux/Actions/cartActions";
+import Toast from "react-native-toast-message";
 const GallonList = (item, index) => {
-  //   useEffect(() => {
-  //     console.log("Item:", item);
-  //   }, [item]);
+  const { type, gallonAge, image } = item;
+  const dispatch = useDispatch();
+
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: index % 2 == 0 ? "white" : "gainsboro",
-        },
-      ]}>
-      <Image
-        source={{
-          uri: item.item.image ? item.item.image : null,
-        }}
-        resizeMode="contain"
-        style={styles.image}
-      />
-      <Text style={styles.item}>{item.item.type || "N/A"}</Text>
+    <View style={styles.card}>
+      <View style={styles.cardBody}>
+        <Image
+          source={{
+            uri: item.item.image ? item.item.image : null,
+          }}
+          resizeMode="contain"
+          style={styles.image}
+        />
 
-      <Text style={styles.item}>{item.item.gallonAge || "N/A"}</Text>
+        <Text style={styles.price}>Gallon Type: {item.item.type || "N/A"}</Text>
+        <Text style={styles.address}>
+          Gallon Age: {item.item.gallonAge || "N/A"}
+        </Text>
 
+        <View>
+          <Button
+            title={"Add to Cart"}
+            onPress={() => {
+              dispatch(actions.addToCart({ ...item, quantity: 1 })),
+                Toast.show({
+                  topOffset: 60,
+                  type: "success",
+                  text1: `added to Cart`,
+                  text2: "Go to your cart to complete order",
+                });
+            }}>
+           
+          </Button>
+        </View>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  cardBody: {
+    marginBottom: 10,
+    padding: 10,
+  },
+  price: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  address: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
   container: {
     flexDirection: "row",
     padding: 5,

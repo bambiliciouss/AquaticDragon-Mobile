@@ -52,6 +52,7 @@ router.get("/:id", async (req, res) => {
   res.status(200).send(user);
 });
 
+
 router.post("/", async (req, res) => {
   const saltRounds = 10;
   const salt = bcrypt.genSaltSync(saltRounds);
@@ -132,6 +133,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//REGISTER USER
 router.post("/register", uploadOptions.single("image"), async (req, res) => {
   const file = req.file;
   if (!file) return res.status(400).send("No image in the request");
