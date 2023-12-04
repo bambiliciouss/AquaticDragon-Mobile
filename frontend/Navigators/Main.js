@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import SlidebarDrawer from "../Shared/SlidebarDrawer";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import CartIcon from "../Shared/CartIcon";
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -73,12 +74,15 @@ const Main = () => {
           headerShown: false,
           tabBarIcon: ({ color }) => {
             return (
-              <Ionicons
-                name="cart"
-                style={{ position: "relative" }}
-                color={color}
-                size={30}
-              />
+              <>
+                <Ionicons
+                  name="cart"
+                  style={{ position: "relative" }}
+                  color={color}
+                  size={30}
+                />
+                <CartIcon />
+              </>
             );
           },
         }}

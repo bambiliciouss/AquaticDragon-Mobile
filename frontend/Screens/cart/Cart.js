@@ -22,7 +22,7 @@
 
 // export default Cart;
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Dimensions,
@@ -52,14 +52,32 @@ import { Ionicons } from "@expo/vector-icons";
 var { height, width } = Dimensions.get("window");
 import Button from "../../Components/Button";
 
-const Cart = (props) => {
+const Cart = () => {
+  const [price, setPrice] = useState([]);
+  const [totalAmount, setTotalAmount] = useState([]);
   const navigation = useNavigation();
+
   var total = 0;
   const cartItems = useSelector((state) => state.cartItems);
+
   cartItems.forEach((cart) => {
-    return (total += cart.price);
+    return (total += 30);
   });
   dispatch = useDispatch();
+  useEffect(() => {
+    setPrice(30);
+    setTotalAmount(total);
+    // console.log(totalAmount);
+  });
+
+  const checktoCheckout = () => {
+    let order = {
+      price,
+      totalAmount,
+    };
+    console.log("shiptotal", order);
+    navigation.navigate("Checkout", { order: order });
+  };
   const renderItem = ({ item, index }) => (
     <TouchableHighlight
       onPress={() => console.log("You touched me")}
@@ -97,7 +115,7 @@ const Cart = (props) => {
               color: "warmGray.50",
             }}
             alignSelf="flex-start">
-            $ {item.price}
+            ₱ {price}
           </Text>
         </HStack>
       </Box>
@@ -141,34 +159,34 @@ const Cart = (props) => {
           <Text>No items in cart</Text>
         </Box>
       )}
+
       <VStack
         style={styles.bottomContainer}
         w="100%"
         justifyContent="space-between">
         <HStack justifyContent="space-between">
-          <Text style={styles.price}>$ {total.toFixed(2)}</Text>
+          <Text style={styles.price}>₱ {total.toFixed(2)}</Text>
         </HStack>
-        <HStack justifyContent="space-between">
+        <HStack>
           <Button
             title={"Clear"}
             style={{
-              marginTop: 4,
+              marginTop: 10,
               marginBottom: 10,
+              width: 80,
             }}
             onPress={() => dispatch(actions.clearCart())}></Button>
-          {/* <Button alignItems="center" onPress={() => dispatch(actions.clearCart())} > Clear</Button> */}
-        </HStack>
-        <HStack justifyContent="space-between">
-          {/* <Button alignItems="center" colorScheme="primary">Check Out</Button> */}
+
           <Button
             title="Checkout"
             filled
             style={{
-              marginTop: 4,
+              marginTop: 10,
               marginBottom: 10,
+              width: 120,
             }}
-            onPress={() => navigation.navigate("Checkout")}></Button>
-          {/* <Button alignItems="center" colorScheme="primary" onPress={() => navigation.navigate('Checkout')}>Check Out</Button> */}
+            onPress={() => checktoCheckout()}
+          />
         </HStack>
       </VStack>
     </>

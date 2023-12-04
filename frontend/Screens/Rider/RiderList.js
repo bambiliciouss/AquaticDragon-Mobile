@@ -8,50 +8,34 @@ import {
 } from "react-native";
 import React, { useEffect } from "react";
 import Button from "../../Components/Button";
-import { useSelector, useDispatch } from "react-redux";
 var { width } = Dimensions.get("window");
-
-import * as actions from "../../Redux/Actions/cartActions";
-import Toast from "react-native-toast-message";
-const GallonList = (item, index) => {
-  const { type, gallonAge, image } = item;
-  const dispatch = useDispatch();
-
+const RiderList = (item, index) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBody}>
-        <Image
-          source={{
-            uri: item.item.image ? item.item.image : null,
-          }}
-          resizeMode="contain"
-          style={styles.image}
-        />
-
-        <Text style={styles.price}>Gallon Type: {item.item.type || "N/A"}</Text>
+        <Text style={styles.price}>
+          Name: {item.item.fname || "N/A"} {item.item.lname || "N/A"}
+        </Text>
         <Text style={styles.address}>
-          Gallon Age: {item.item.gallonAge || "N/A"}
+          Address: {item.item.houseNo || "N/A"}, {item.item.streetName || "N/A"}, {item.item.purokNum || "N/A"},{" "}
+          {item.item.barangay || "N/A"}, {item.item.city || "N/A"}
         </Text>
 
-        <View>
-          <Button
-            title={"Add to Cart"}
-            onPress={() => {
-              dispatch(actions.addToCart({ ...item, quantity: 1 })),
-                Toast.show({
-                  topOffset: 60,
-                  type: "success",
-                  text1: `added to Cart`,
-                  text2: "Go to your cart to complete order",
-                });
-            }}></Button>
-        </View>
+        <Text style={styles.address}>Phone: {item.item.phone || "N/A"}</Text>
+        <Text style={styles.address}>Email Address: {item.item.email || "N/A"}
+        </Text>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    padding: 5,
+    width: width,
+    marginBottom: 5,
+  },
   card: {
     backgroundColor: "#fff",
     borderRadius: 5,
@@ -79,12 +63,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
   },
-  container: {
-    flexDirection: "row",
-    padding: 5,
-    width: width,
-    marginBottom: 5,
-  },
   image: {
     borderRadius: 10,
     width: width / 3,
@@ -92,7 +70,7 @@ const styles = StyleSheet.create({
     margin: 7,
   },
   item: {
-    flexWrap: "wrap",
+    flex: 1,
     marginVertical: 3,
     width: width / 3,
     fontSize: 16,
@@ -112,5 +90,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
-export default GallonList;
+export default RiderList;

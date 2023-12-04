@@ -38,7 +38,7 @@ const orderSchema = mongoose.Schema({
   status: {
     type: String,
     required: true,
-    default: "Pending",
+    default: "1",
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

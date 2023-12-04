@@ -21,9 +21,9 @@ import AuthGlobal from "../../Context/store/AuthGlobal";
 import Button from "../../Components/Button";
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
-import BranchList from "./BranchList";
-const Branch = () => {
-  const [branchList, setBranchList] = useState();
+import RiderList from "./RiderList";
+const Rider = () => {
+  const [riderList, setRiderList] = useState();
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState("");
   const [refreshing, setRefreshing] = useState(false);
@@ -34,7 +34,7 @@ const Branch = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      axios.get(`${baseURL}supplier`).then((res) => {
+      axios.get(`${baseURL}users/riderslist`).then((res) => {
         // console.log(res.data)
         setBranchList(res.data);
         setLoading(false);
@@ -52,53 +52,45 @@ const Branch = () => {
         AsyncStorage.getItem("jwt")
           .then((res) => {
             axios
-              .get(`${baseURL}supplier/`, {
+              .get(`${baseURL}users/riderslist`, {
                 headers: { Authorization: `Bearer ${res}` },
               })
               .then((res) => {
                 //console.log(res.data);
-                setBranchList(res.data);
+                setRiderList(res.data);
                 setLoading(false);
-                console.log("Gallon List:", branchList);
+                console.log("Riders List:", riderList);
               });
           })
           .catch((error) => console.log(error));
         return () => {
-          setBranchList();
+          setRiderList();
           setLoading(true);
         };
       }
     }, [context.stateUser.isAuthenticated])
   );
 
- 
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
         <View>
           <Button
-            title="Register Store"
+            title="Register New Rider"
             filled
             style={{
               marginTop: 18,
               marginBottom: 4,
             }}
-            onPress={() =>
-              navigation.navigate("Store Branches", {
-                screen: "BranchRegister",
-              })
-            }
+            onPress={() => navigation.navigate("RiderRegister")}
           />
         </View>
 
-    
-
         <FlatList
           contentContainerStyle={styles.propertyListContainer}
-          data={branchList}
+          data={riderList}
           renderItem={({ item, index }) => (
-            <BranchList item={item} index={index} />
+            <RiderList item={item} index={index} />
           )}
           keyExtractor={(item) => item._id}
         />
@@ -150,4 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Branch;
+export default Rider;

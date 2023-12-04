@@ -31,6 +31,45 @@ const storage = multer.diskStorage({
 
 const uploadOptions = multer({ storage: storage });
 
+router.get(`/riderslist`, async (req, res) => {
+  const riderList = await User.find({ role: "rider" });
+
+  if (!riderList) {
+    res.status(500).json({ success: false });
+  }
+  res.status(200).send(riderList);
+});
+
+//REGISTER USER
+router.post("/register", uploadOptions.single("image"), async (req, res) => {
+  const file = req.file;
+  if (!file) return res.status(400).send("No image in the request");
+
+  const fileName = file.filename;
+  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/users/`;
+
+  let user = new User({
+    fname: req.body.fname,
+    lname: req.body.lname,
+    phone: req.body.phone,
+    houseNo: req.body.houseNo,
+    streetName: req.body.streetName,
+    purokNum: req.body.purokNum,
+    barangay: req.body.barangay,
+    city: req.body.city,
+    image: `${basePath}${fileName}`,
+    email: req.body.email,
+    passwordHash: bcrypt.hashSync(req.body.password, 10),
+    role: req.body.role,
+  });
+
+  user = await user.save();
+
+  if (!user) return res.status(400).send("the user cannot be created!");
+
+  res.send(user);
+});
+
 router.get(`/`, async (req, res) => {
   // const userList = await User.find();
   const userList = await User.find().select("-passwordHash");
@@ -51,7 +90,6 @@ router.get("/:id", async (req, res) => {
   }
   res.status(200).send(user);
 });
-
 
 router.post("/", async (req, res) => {
   const saltRounds = 10;
@@ -131,36 +169,6 @@ router.post("/login", async (req, res) => {
   } else {
     res.status(400).send("password is wrong!");
   }
-});
-
-//REGISTER USER
-router.post("/register", uploadOptions.single("image"), async (req, res) => {
-  const file = req.file;
-  if (!file) return res.status(400).send("No image in the request");
-
-  const fileName = file.filename;
-  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/users/`;
-
-  let user = new User({
-    fname: req.body.fname,
-    lname: req.body.lname,
-    phone: req.body.phone,
-    houseNo: req.body.houseNo,
-    streetName: req.body.streetName,
-    purokNum: req.body.purokNum,
-    barangay: req.body.barangay,
-    city: req.body.city,
-    image: `${basePath}${fileName}`,
-    email: req.body.email,
-    passwordHash: bcrypt.hashSync(req.body.password, 10),
-    role: req.body.role,
-  });
-
-  user = await user.save();
-
-  if (!user) return res.status(400).send("the user cannot be created!");
-
-  res.send(user);
 });
 
 router.delete("/:id", (req, res) => {

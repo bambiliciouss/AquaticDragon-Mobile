@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import {
   View,
-  Button,
   Pressable,
   FlatList,
   TouchableOpacity,
   Dimensions,
+  StyleSheet,
 } from "react-native";
 import {
   Container,
@@ -24,6 +24,7 @@ import {
   CheckIcon,
 } from "native-base";
 
+import Button from "../../../Components/Button";
 import { useNavigation } from "@react-navigation/native";
 
 const methods = [
@@ -57,42 +58,130 @@ const Payment = (props) => {
   };
 
   return (
-    <Container flex="1">
-      <Heading>
-        <Text>Choose your payment method</Text>
-      </Heading>
-
-      <HStack bg="red.200" width="100%">
-        <Radio.Group
-          name="myRadioGroup"
-          value={selectedPayment}
-          onChange={(value) => {
-            setselectedPayment(value);
-          }}>
-          {console.log(selectedPayment)}
-          {methods.map((item, index) => {
-            return (
-              <Radio
-                key={index}
-                value={item.value}
-                my="1"
-                colorScheme="green"
-                size="22"
-                style={{ float: "right" }}
-                icon={
-                  <CheckCircleIcon size="22" mt="0.5" color="emerald.500" />
-                }>
-                {item.name}
-              </Radio>
-            );
-          })}
-        </Radio.Group>
-      </HStack>
-
-      <View style={{ marginTop: 60, alignSelf: "center" }}>
-        <Button title={"Confirm"} onPress={() => checktoConfirm()} />
+    <View style={styles.container}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.name}>Choose your payment method:</Text>
       </View>
-    </Container>
+
+      <View style={styles.card}>
+        <View style={styles.cardContent}>
+          <Radio.Group
+            name="myRadioGroup"
+            value={selectedPayment}
+            onChange={(value) => {
+              setselectedPayment(value);
+            }}>
+            {console.log(selectedPayment)}
+            {methods.map((item, index) => {
+              return (
+                <Radio
+                  key={index}
+                  value={item.value}
+                  my="1"
+                  colorScheme="blue"
+                  size="22"
+                  style={{ float: "right" }}
+                  icon={
+                    <CheckCircleIcon size="22" mt="0.5" color="#95a5a6" />
+                  }>
+                  {item.name}
+                </Radio>
+              );
+            })}
+          </Radio.Group>
+        </View>
+      </View>
+
+      <View style={{ width: "100%", alignItems: "center" }}>
+        <Button
+          title="Select Payment"
+          filled
+          style={{
+            marginTop: 18,
+            marginBottom: 4,
+            width: 300,
+          }}
+          onPress={() => checktoConfirm()}
+        />
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 20,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+
+  content: {
+    marginLeft: 10,
+    marginRight: 20,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  /******** card **************/
+  card: {
+    shadowColor: "#00000021",
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.37,
+    shadowRadius: 7.49,
+    elevation: 12,
+
+    marginVertical: 5,
+    backgroundColor: "white",
+    marginHorizontal: 5,
+    borderRadius: 30,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingTop: 12.5,
+    paddingBottom: 12.5,
+    paddingHorizontal: 16,
+    borderBottomLeftRadius: 1,
+    borderBottomRightRadius: 1,
+  },
+  name: {
+    fontSize: 18,
+    color: "#696969",
+    fontWeight: "bold",
+    flex: 1,
+    textAlign: "left",
+  },
+  nameafter: {
+    fontSize: 15,
+    color: "#696969",
+    fontWeight: "bold",
+    flex: 1,
+    textAlign: "center",
+    fontStyle: "italic",
+  },
+  cardContent: {
+    paddingVertical: 12.5,
+    paddingHorizontal: 16,
+  },
+  description: {
+    fontSize: 14,
+    // color: "#696969",
+    textAlign: "justify",
+  },
+
+  iconRow: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  price: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+    textAlign: "right",
+  },
+});
 export default Payment;

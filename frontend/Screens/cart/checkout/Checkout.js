@@ -117,6 +117,7 @@ const Checkout = () => {
     console.log("orders", orderItems);
     let order = {
       orderItems,
+    
       latitude,
       longitude,
       houseNo,

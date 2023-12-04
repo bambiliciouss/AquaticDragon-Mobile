@@ -61,7 +61,7 @@ const BranchRegister = () => {
           });
 
           setTimeout(() => {
-            navigation.navigate("Register as Distributor", { screen: "Branch" });
+            navigation.navigate("Store Branches", { screen: "Branch" });
           }, 500);
         }
       })

@@ -23,14 +23,14 @@ function authJwt() {
         url: /\/api\/v1\/orders(.*)/,
         methods: ["GET", "POST", "PUT", "OPTIONS"],
       },
+
       { url: /\/public\/uploads(.*)/, methods: ["GET", "OPTIONS", "POST"] },
       `${api}/users`,
       `${api}/users/login`,
       `${api}/users/register`,
+      `${api}/users/riderslist`,
       `${api}/gallon/registergallons`,
       `${api}/supplier/registersupplierbranch`,
-      
-
     ],
   });
 }

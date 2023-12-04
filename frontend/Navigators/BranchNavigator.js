@@ -7,13 +7,22 @@ const Stack = createStackNavigator();
 import AuthGlobal from "../Context/store/AuthGlobal";
 import SupplierRegister from "../Screens/supplier/SupplierRegister";
 
+import BranchRegister from "../Screens/supplier/BranchRegister";
+import Branch from "../Screens/supplier/Branch";
 
-const SupplierNavigator = () => {
+const BranchNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="SupplierRegister"
-        component={SupplierRegister}
+        name="Branch"
+        component={Branch}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="BranchRegister"
+        component={BranchRegister}
         options={{
           headerShown: false,
         }}
@@ -22,4 +31,4 @@ const SupplierNavigator = () => {
   );
 };
 
-export default SupplierNavigator;
+export default BranchNavigator;

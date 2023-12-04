@@ -45,6 +45,7 @@ const RegisterGallon = ({ navigation }) => {
     if (context.stateUser.isAuthenticated) {
       setUser(context.stateUser.user.userId);
     }
+    console.log(dropdownItems);
 
     (async () => {
       if (Platform.OS !== "web") {
@@ -177,7 +178,7 @@ const RegisterGallon = ({ navigation }) => {
               <Picker
                 selectedValue={type}
                 onValueChange={(itemValue) => setType(itemValue)}
-                style={{ height: 40, width: "100%" }}>
+                style={{ height: 40, width: "100%", borderColor: 'red', borderWidth: 1 }}>
                 <Picker.Item label="Choose here..." value={null} />
                 {dropdownItems.map((item) => (
                   <Picker.Item

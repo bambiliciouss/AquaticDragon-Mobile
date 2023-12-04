@@ -95,21 +95,7 @@ const Profile = () => {
           }),
         ]}
       />
-      {context && context.stateUser.user.role === "admin" && (
-        <Button
-          title="View Branch Store"
-          filled
-          style={{
-            marginTop: 18,
-            marginBottom: 4,
-          }}
-          onPress={() =>
-            navigation.navigate("Register as Distributor", {
-              screen: "Branch",
-            })
-          }
-        />
-      )}
+   
     </View>
   );
 };

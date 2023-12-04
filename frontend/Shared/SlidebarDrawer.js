@@ -204,39 +204,128 @@
 
 // export default SlidebarDrawer;
 
-
 // SlidebarDrawer.js
-import React from 'react';
-import { Image, Text, View } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import Main from '../Navigators/Main';
-import SupplierNavigator from '../Navigators/SupplierNavigator';
-import Header from '../Shared/Header';
+import React, { useState, useEffect, useContext } from "react";
+import { Image, Text, View, StyleSheet } from "react-native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import Main from "../Navigators/Main";
+import SupplierNavigator from "../Navigators/SupplierNavigator";
+import Header from "../Shared/Header";
 
+import AuthGlobal from "../Context/store/AuthGlobal";
+import RiderNavigator from "../Navigators/RiderNavigator";
 const Drawer = createDrawerNavigator();
 
+import BranchNavigator from "../Navigators/BranchNavigator";
+import AdminNavigator from "../Navigators/AdminNavigator";
+import { Ionicons } from "@expo/vector-icons";
+
 const SlidebarDrawer = () => {
+  const context = useContext(AuthGlobal);
+
   return (
-    <Drawer.Navigator
-      drawerStyle={{
-        backgroundColor: '#00bbff',
-        width: 300,
-      }}>
-      <Drawer.Screen
-        name="Home"
-        component={Main}
-        options={{
-          headerTitle: () => <Header title="Aquatic Dragon" />,
-        }}
-      />
-      <Drawer.Screen
-        name="Register as Distributor"
-        component={SupplierNavigator}
-        options={{
-          headerTitle: () => <Header title="Register as Distributor" />,
-        }}
-      />
-    </Drawer.Navigator>
+    <View style={{ flex: 1 }}>
+      <Drawer.Navigator
+        drawerStyle={{
+          backgroundColor: "#00bbff",
+          width: 300,
+        }}>
+        <Drawer.Screen
+          name="Home"
+          component={Main}
+          options={{
+            headerTitle: () => <Header title="Aquatic Dragon" />,
+            drawerIcon: ({ color }) => {
+              return (
+                <Ionicons
+                  name="home"
+                  style={{ position: "relative" }}
+                  color={color}
+                  size={20}
+                />
+              );
+            },
+          }}
+        />
+
+        {!context.stateUser.isAuthenticated && (
+          <Drawer.Screen
+            name="Register as Distributor"
+            component={SupplierNavigator}
+            options={{
+              headerTitle: () => <Header title="Register as Distributor" />,
+              drawerIcon: ({ color }) => {
+                return (
+                  <Ionicons
+                    name="person-add"
+                    style={{ position: "relative" }}
+                    color={color}
+                    size={20}
+                  />
+                );
+              },
+            }}
+          />
+        )}
+
+        {context && context.stateUser.user.role === "admin" && (
+          <>
+            <Drawer.Screen
+              name="Riders"
+              component={RiderNavigator}
+              options={{
+                headerTitle: () => <Header title="Riders" />,
+                drawerIcon: ({ color }) => {
+                  return (
+                    <Ionicons
+                      name="people"
+                      style={{ position: "relative" }}
+                      color={color}
+                      size={20}
+                    />
+                  );
+                },
+              }}
+            />
+            <Drawer.Screen
+              name="Store Branches"
+              component={BranchNavigator}
+              options={{
+                headerTitle: () => <Header title="Store Branches" />,
+                drawerIcon: ({ color }) => {
+                  return (
+                    <Ionicons
+                      name="clipboard"
+                      style={{ position: "relative" }}
+                      color={color}
+                      size={20}
+                    />
+                  );
+                },
+              }}
+            />
+
+            <Drawer.Screen
+              name="Orders List"
+              component={AdminNavigator}
+              options={{
+                headerTitle: () => <Header title="OrderList" />,
+                drawerIcon: ({ color }) => {
+                  return (
+                    <Ionicons
+                      name="people"
+                      style={{ position: "relative" }}
+                      color={color}
+                      size={20}
+                    />
+                  );
+                },
+              }}
+            />
+          </>
+        )}
+      </Drawer.Navigator>
+    </View>
   );
 };
 
